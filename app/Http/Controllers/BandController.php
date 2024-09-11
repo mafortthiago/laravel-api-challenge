@@ -4,45 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class BandController extends Controller
-{
+class BandController extends Controller {
+    protected $bands = [
+        ["id" => 1, 'name' => 'Engenheiros do Hawaii', 'gender' => 'Rock brasileiro'],
+        ["id" => 2, 'name' => 'A-ha', 'gender' => 'Pop-rock']
+    ];
 
-    public function getAll(){
-        $bands = $this->getBands();
-        return response()->json([$bands]);
+    public function getAll() {
+        return response()->json($this->bands);
     }
-    public function getById($id){
-        $band = null;
-        foreach($this->getBands() as $band){
-            if($band['id'] == $id){
+
+    public function getById($id) {
+        foreach($this->bands as $band) {
+            if($band['id'] == $id) {
                 return response()->json($band);
             }
         }
-        abort(404);
+        abort(404, 'Banda não encontrada');
     }
-    public function getByGender($gender){
-        $bands = [];
 
-        foreach($this->getBands() as $_band) {
-            if ($_band['gender'] == $gender) {
-                $bands[] = $_band;
+    public function getByGender($gender) {
+        $bands = [];
+        foreach($this->bands as $band) {
+            if($band['gender'] == $gender) {
+                $bands[] = $band;
             }
         }
-
         return response()->json($bands);
-    }
-
-    public function insert(Request $request){
-        $validate = $request->validate([
-            'name' =>'required|min:3'
-        ]);
-        return response()->json($request->all());
-    }
-
-    protected function getBands(){
-        return [
-            ["id" => 1, 'name' => 'Engenheiros do hawaii', 'gender' => 'Rock brasileiro'],
-            ["id" => 2, 'name' => 'A-ha', 'gender' => 'Pop-rock']
-        ];
     }
 }
